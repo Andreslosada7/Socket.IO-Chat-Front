@@ -4,8 +4,8 @@ import ChatForm from "./components/ChatForm";
 import ChatTable from "./components/ChatTable";
 import StartForm from "./components/StartForm";
 
-const socket = io("http://localhost:3000");
-//const socket = io("/");
+const URL = import.meta.env.VITE_BACKEND_URL;
+const socket = io(URL);
 
 type Message = {
   body: string;
@@ -16,15 +16,13 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [name, setName] = useState("");
   const [registered, setRegistered] = useState(false);
-  /*   const [message, setMessage] = useState<string>(""); */
+
+  const receiveMessage = (message: Message) => {
+    console.log(message);
+    setMessages((state) => [message, ...state]);
+  };
 
   useEffect(() => {
-    // Debemos definir la función dentro del useEffect o hacerla una función externa para que no dependa de variables del componente
-    const receiveMessage = (message: Message) => {
-      console.log(message);
-      setMessages((state) => [message, ...state]);
-    };
-
     socket.on("message", receiveMessage);
 
     return () => {
@@ -34,7 +32,6 @@ export default function App() {
 
   const sendMessage = (newMessage: Message) => {
     setMessages((state) => [newMessage, ...state]);
-
     socket.emit("message", newMessage);
   };
 
@@ -44,7 +41,7 @@ export default function App() {
         {!registered ? (
           <StartForm setName={setName} setRegistered={setRegistered} />
         ) : (
-          <div className="flex flex-col w-1/4">
+          <div className="flex flex-col sm:w-1/4 w-full h-screen">
             <ChatTable messages={messages} name={name} />
             <ChatForm sendMessage={sendMessage} name={name} />
           </div>

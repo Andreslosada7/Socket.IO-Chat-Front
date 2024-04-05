@@ -12,7 +12,7 @@ const ChatTable: React.FC<ChatTableProps> = ({ messages, name }) => {
   return (
     <>
       <h1 className="text-2xl text-center my-2">{name}</h1>
-      <ul className="h-80 overflow-y-auto bg-white rounded-t p-2 col flex flex-col-reverse">
+      <ul className="sm:h-80 h-3/6 overflow-y-auto bg-white rounded-t p-2 col flex flex-col-reverse">
         {messages.map((msg, index) => (
           <li
             key={index}

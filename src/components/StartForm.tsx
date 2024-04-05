@@ -8,7 +8,10 @@ const StartForm: React.FC<StartFormProps> = ({ setName, setRegistered }) => {
     setRegistered(true);
   };
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col w-1/2 mx-auto mt-10">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col sm:w-1/2 w-2/3 mx-auto mt-10"
+    >
       <label htmlFor="name" className="text-2xl text-center my-2">
         Enter your name
       </label>

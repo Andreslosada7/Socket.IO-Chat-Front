@@ -15,12 +15,19 @@ type Message = {
   from: string;
 };
 
+type Player = {
+  id: string;
+  hidden: number;
+};
+
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [name, setName] = useState("");
   const [registered, setRegistered] = useState(false);
   const [gameMood, setGameMood] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showGame, setShowGame] = useState(false);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   const receiveMessage = (message: Message) => {
     setMessages((state) => [message, ...state]);
@@ -29,14 +36,30 @@ export default function App() {
   const handleGameMood = () => {
     setGameMood(true);
   };
+
   const handleShowForm = () => {
     setShowForm(true);
+  };
+
+  const handleShowGame = () => {
+    setShowGame(true);
+  };
+
+  const handleShowPlayers = (playerList: Player[]) => {
+    setPlayers(playerList);
+  };
+
+  const handleRegisterPlayer = (dataPlayer: Player) => {
+    setPlayers((state) => [dataPlayer, ...state]);
   };
 
   useEffect(() => {
     socket.on("message", receiveMessage);
     socket.on("startGame", handleGameMood);
     socket.on("showForm", handleShowForm);
+    socket.on("showGame", handleShowGame);
+    socket.on("showPlayers", handleShowPlayers);
+    socket.on("registerPlayer", handleRegisterPlayer);
 
     return () => {
       socket.off("message");
@@ -55,6 +78,10 @@ export default function App() {
 
   const sendShowForm = () => {
     socket.emit("showForm");
+  };
+
+  const sendShowGame = () => {
+    socket.emit("showGame");
   };
 
   return (
@@ -78,7 +105,10 @@ export default function App() {
           }
         ></Route>
       ) : (
-        <Route path="/" element={<Game showForm={showForm} />}></Route>
+        <Route
+          path="/"
+          element={<Game showForm={showForm} showGame={showGame} />}
+        ></Route>
       )}
       <Route
         path="/admin"
@@ -86,6 +116,8 @@ export default function App() {
           <AdminPanel
             sendStartGame={sendStartGame}
             sendShowForm={sendShowForm}
+            sendShowPlayers={sendShowGame}
+            sendShowGame={sendShowGame}
           />
         }
       ></Route>
